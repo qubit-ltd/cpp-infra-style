@@ -86,10 +86,6 @@
       "executable": false,
       "sha256": "b71e552b287ae37d7143a235481468d99d76829bc0793c3bf1788d48b38d6fa6"
     },
-    ".infra/pages/pages.json": {
-      "executable": false,
-      "sha256": "0464afed8ddf2e1634e08fa67415ae75b449e5c7befb0f09f4a037800bae05d3"
-    },
     ".infra/style/exceptions.toml": {
       "executable": false,
       "sha256": "a1af1bccf46862c1ce45d1064094b00a0808329540e06a44bcedd8c921849f1e"

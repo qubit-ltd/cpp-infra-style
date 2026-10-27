@@ -1,1 +1,2 @@
-profiles = ["ci-default", "cargo-matrix-default", "local-path-dependencies-default", "pages-default", "style-exceptions-default"]
+# Pages is project-owned because this repository uses README.zh-CN.md.
+profiles = ["ci-default", "cargo-matrix-default", "local-path-dependencies-default", "style-exceptions-default"]
