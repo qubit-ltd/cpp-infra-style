@@ -591,7 +591,10 @@ fn test_runtime_snapshot_validates_content_bundle_tool_and_executable_identity()
     assert_eq!(run(dir.path(), &["check"]).status.code(), Some(0));
     let prior = report(dir.path());
     let binary = fs::canonicalize(env!("CARGO_BIN_EXE_cpp-infra-style")).expect("binary");
-    let executable_sha256 = format!("{:x}", Sha256::digest(fs::read(&binary).expect("binary bytes")));
+    let executable_sha256 = Sha256::digest(fs::read(&binary).expect("binary bytes"))
+        .iter()
+        .map(|byte| format!("{byte:02x}"))
+        .collect::<String>();
     let snapshot = serde_json::json!({"schema":1,"bundle_id":"main-current","tools":[{"name":"cpp-infra-style","version":"0.1.0","revision":null,"protocol":1,"binary":binary,"executable_sha256":executable_sha256}],"offline":true,"stale":false});
     let snapshot_path = dir.path().join("build/runtime-snapshot.json");
     let context_path = dir.path().join("build/context.json");
@@ -618,7 +621,10 @@ fn test_runtime_snapshot_validates_content_bundle_tool_and_executable_identity()
         context["runtime_snapshot_digest"] = serde_json::json!(if mutation == "file-hash" {
             "0".repeat(64)
         } else {
-            format!("{:x}", Sha256::digest(&bytes))
+            Sha256::digest(&bytes)
+                .iter()
+                .map(|byte| format!("{byte:02x}"))
+                .collect::<String>()
         });
         fs::write(&context_path, serde_json::to_vec(&context).expect("context bytes")).expect("context");
         let result = run(dir.path(), &["--run-context", context_arg, "check"]);

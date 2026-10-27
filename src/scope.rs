@@ -27,7 +27,7 @@ pub(crate) struct Source {
 }
 
 pub(crate) fn hash(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    Sha256::digest(bytes).iter().map(|byte| format!("{byte:02x}")).collect()
 }
 
 /// Encode actual path components, rejecting literal characters that would alias
@@ -139,7 +139,7 @@ pub(crate) fn digest(root: &Path, config_only: bool, excluded: &[PathBuf]) -> Re
         hasher.update((bytes.len() as u64).to_le_bytes());
         hasher.update(&bytes);
     }
-    Ok(format!("{:x}", hasher.finalize()))
+    Ok(hasher.finalize().iter().map(|byte| format!("{byte:02x}")).collect())
 }
 
 fn walk_digest(

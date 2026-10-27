@@ -204,10 +204,10 @@ fn test_s3_reused_context_preserves_every_previous_artifact_digest() {
         );
         for artifact in report["artifacts"].as_array().expect("artifact list") {
             let path = artifact["path"].as_str().expect("relative artifact path");
-            let digest = format!(
-                "{:x}",
-                Sha256::digest(fs::read(root.join(path)).expect("artifact bytes"))
-            );
+            let digest = Sha256::digest(fs::read(root.join(path)).expect("artifact bytes"))
+                .iter()
+                .map(|byte| format!("{byte:02x}"))
+                .collect::<String>();
             assert_eq!(
                 artifact["sha256"], digest,
                 "run {marker} artifact {path} changed after retry"

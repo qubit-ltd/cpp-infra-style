@@ -331,7 +331,13 @@ fn test_project_owned_delivery_template_is_manifested_and_runs_with_actual_scope
             .join(entry["source"].as_str().expect("template source")),
     )
     .expect("template bytes");
-    assert_eq!(entry["sha256"], format!("{:x}", Sha256::digest(&template)));
+    assert_eq!(
+        entry["sha256"],
+        Sha256::digest(&template)
+            .iter()
+            .map(|byte| format!("{byte:02x}"))
+            .collect::<String>()
+    );
     let directory = fixture();
     let project = directory.path();
     fs::write(project.join(".infra/style/config.toml"), template).expect("install shipped init template");
@@ -430,7 +436,7 @@ fn test_malformed_run_context_and_runtime_snapshot_fields_are_precise_errors() {
     let snapshot_path = project.join("build/snapshot.json");
     let binary = fs::canonicalize(env!("CARGO_BIN_EXE_cpp-infra-style")).expect("binary");
     let mut context = json!({"schema":1,"run_id":"validation","task_id":"style","bundle_id":"validation-bundle","project":project,"profile":null,"source_digest":baseline["source_digest"],"config_digest":baseline["config_digest"],"report_root":project.join("build/infra-runs/validation")});
-    let snapshot = json!({"schema":1,"bundle_id":"validation-bundle","tools":[{"name":"cpp-infra-style","version":"0.1.0","revision":null,"protocol":1,"binary":binary,"executable_sha256":format!("{:x}",Sha256::digest(fs::read(&binary).expect("binary bytes")))}],"offline":true,"stale":false});
+    let snapshot = json!({"schema":1,"bundle_id":"validation-bundle","tools":[{"name":"cpp-infra-style","version":"0.1.0","revision":null,"protocol":1,"binary":binary,"executable_sha256":Sha256::digest(fs::read(&binary).expect("binary bytes")).iter().map(|byte| format!("{byte:02x}")).collect::<String>()}],"offline":true,"stale":false});
     fs::write(&context_path, b"not JSON").expect("malformed context");
     assert_configuration_failure(
         project,
@@ -486,8 +492,12 @@ fn test_malformed_run_context_and_runtime_snapshot_fields_are_precise_errors() {
                 let other = project.join("build/other-binary");
                 fs::write(&other, b"unrelated executable bytes").expect("different binary");
                 candidate["tools"][0]["binary"] = json!(other);
-                candidate["tools"][0]["executable_sha256"] =
-                    json!(format!("{:x}", Sha256::digest(b"unrelated executable bytes")));
+                candidate["tools"][0]["executable_sha256"] = json!(
+                    Sha256::digest(b"unrelated executable bytes")
+                        .iter()
+                        .map(|byte| format!("{byte:02x}"))
+                        .collect::<String>()
+                );
             }
             _ => {}
         }
@@ -503,7 +513,12 @@ fn test_malformed_run_context_and_runtime_snapshot_fields_are_precise_errors() {
                 .expect("context object")
                 .remove("runtime_snapshot_digest");
         } else {
-            context["runtime_snapshot_digest"] = json!(format!("{:x}", Sha256::digest(&bytes)));
+            context["runtime_snapshot_digest"] = json!(
+                Sha256::digest(&bytes)
+                    .iter()
+                    .map(|byte| format!("{byte:02x}"))
+                    .collect::<String>()
+            );
         }
         fs::write(&context_path, serde_json::to_vec(&context).expect("context JSON")).expect("context");
         assert_configuration_failure(
