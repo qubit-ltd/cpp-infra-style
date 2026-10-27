@@ -535,12 +535,22 @@ fn test_cancellation_terminates_formatter_process_group() {
     assert_eq!(child.wait().expect("cancelled CLI").code(), Some(130));
     assert_eq!(report(dir.path())["status"], "cancelled");
     let pid = fs::read_to_string(marker).expect("child PID");
-    if let Ok(stat) = fs::read_to_string(format!("/proc/{pid}/stat")) {
-        assert_eq!(
-            stat.split_whitespace().nth(2),
-            Some("Z"),
-            "formatter descendant must have terminated"
-        );
+    let deadline = Instant::now() + Duration::from_secs(5);
+    loop {
+        match fs::read_to_string(format!("/proc/{pid}/stat")) {
+            Ok(stat) => {
+                if stat.split_whitespace().nth(2) == Some("Z") {
+                    break;
+                }
+                assert!(
+                    Instant::now() < deadline,
+                    "formatter descendant must have terminated: {stat}"
+                );
+            }
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => break,
+            Err(error) => panic!("cannot read formatter descendant status: {error}"),
+        }
+        sleep(Duration::from_millis(10));
     }
 }
 
