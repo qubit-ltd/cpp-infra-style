@@ -1,0 +1,18 @@
+# Initial project-owned style configuration. Created only when absent by init;
+# explicit infrastructure updates must preserve project edits to this file.
+schema = 1
+
+# Adjust suffixes to the C/C++ files maintained by this project.
+extensions = ["h", "hpp", "hxx", "c", "cc", "cpp", "cxx", "ipp", "tcc"]
+
+# Patterns are project-relative. The tool always intersects them with the actual
+# source_roots/test_roots declared in .infra/project.toml; third-party and
+# generated ownership roots do not participate. Narrow these patterns if needed.
+include = ["**"]
+exclude = []
+
+# Organization-required rules cannot be removed here.
+rules = ["format", "spdx-header", "final-newline", "trailing-whitespace"]
+
+# Optional: first create a tracked exact-exception file, then enable its path.
+# exceptions = ".infra/style/exceptions.toml"

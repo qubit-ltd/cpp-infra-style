@@ -1,0 +1,6 @@
+schema = 1
+required_rules = ["format", "spdx-header", "final-newline", "trailing-whitespace"]
+formatter_major = 18
+spdx_license = "Apache-2.0"
+copyright = "Copyright (c)"
+allow_bom = false

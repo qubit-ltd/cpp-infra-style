@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "source": "policy/rules.toml",
+      "target": ".infra/style/policy/rules.toml",
+      "sha256": "a7925ceddb799189b3c9bcf5c8567728e7d1286de175d43b6eab021a17b89cd2",
+      "executable": false
+    },
+    {
+      "source": "policy/clang-format.yaml",
+      "target": ".infra/style/policy/clang-format.yaml",
+      "sha256": "8e593d23e344eaa19f4b2da49195c6db874ac09c2c41415dc35da541ad952c43",
+      "executable": false
+    }
+  ],
+  "project_files": [
+    {
+      "source": "config.toml",
+      "target": ".infra/style/config.toml",
+      "sha256": "91c25395f1789fbeb930e0383a64f697207b0d0f0f8c71bda8472e61a4d0ec7c",
+      "executable": false
+    }
+  ]
+}
